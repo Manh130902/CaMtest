@@ -1,0 +1,278 @@
+body {
+  width: 1000px;
+  margin: 0px auto;
+  background-color: white;
+  border: 1px solid black;
+}
+.top .left {
+  width: 500px;
+  background-color: white;
+  float: left;
+}
+.top .anh1 {
+  width: 500px;
+  background-color: white;
+  float: left;
+}
+.anh1 img {
+  float: right;
+  width: 500px;
+  height: 565px;
+}
+.anh1 ul {
+  list-style: none;
+}
+.anh1 ul.in li a {
+  position: absolute;
+  right: 450px;
+  top: 40px;
+  color: black;
+  text-decoration: none;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.anh1 ul.up li a {
+  position: absolute;
+  right: 300px;
+  top: 40px;
+  color: black;
+  text-decoration: none;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.left ul {
+  list-style: none;
+}
+.left ul li {
+  text-decoration: none;
+  display: inline-block;
+}
+.left ul li h1 {
+  color: #837dff;
+}
+.left ul li a {
+  text-decoration: none;
+  color: black;
+  margin-top: 30px;
+  padding-left: 80px;
+  padding-left: 80px;
+}
+.left p {
+  margin-top: 120px;
+  margin-left: 40px;
+  font-style: normal;
+  font-weight: bolder;
+  font-size: 30px;
+}
+.left h4 {
+  margin-left: 40px;
+  font-style: normal;
+  font-weight: bolder;
+  font-size: 20px;
+}
+.getstart {
+  background-color: #ffd581;
+  width: 150px;
+  height: 40px;
+  margin-left: 40px;
+  border-radius: 5px;
+}
+.getstart h3 {
+  padding-top: 10px;
+  padding-left: 30px;
+}
+.getstart h3 a {
+  font-style: normal;
+  font-weight: bolder;
+  text-decoration: none;
+  color: black;
+}
+.product h2 {
+  margin-top: 550px;
+  margin-left: 370px;
+  font-size: 30px;
+  padding-top: 20px;
+}
+.o1 {
+  width: 425px;
+  height: 150px;
+  background-color: rgb(236, 233, 233);
+  float: left;
+  margin-right: 50px;
+  margin-left: 25px;
+  border-radius: 20px;
+}
+.o2 {
+  width: 425px;
+  height: 150px;
+  background-color: rgb(236, 230, 230);
+  float: left;
+  margin-left: 50px;
+  border-radius: 20px;
+}
+.doi .o1 img {
+  margin-top: 50px;
+  margin-left: 20px;
+  width: 100px;
+  height: 70px;
+  float: left;
+}
+.doi .o1 h3 {
+  font-size: 30px;
+  font-weight: bolder;
+  margin-left: 110px;
+}
+.doi .o1 p {
+  margin-top: -20px;
+  font-size: 20px;
+  margin-left: 110px;
+}
+.doi .o2 img {
+  margin-top: 45px;
+  margin-left: 20px;
+  width: 110px;
+  height: 70px;
+  float: left;
+}
+.doi .o2 h3 {
+  font-size: 30px;
+  font-weight: bolder;
+  margin-left: 110px;
+}
+.doi .o2 p {
+  margin-top: -20px;
+  font-size: 20px;
+  margin-left: 110px;
+}
+.o3 {
+  width: 425px;
+  height: 150px;
+  background-color: rgb(236, 230, 230);
+  float: left;
+  margin-left: 300px;
+  margin-top: 50px;
+  border-radius: 20px;
+}
+
+.doi .o3 img {
+  margin-top: 40px;
+  margin-left: 20px;
+  width: 90px;
+  height: 80px;
+  float: left;
+}
+.doi .o3 h3 {
+  font-size: 30px;
+  font-weight: bolder;
+  margin-left: 120px;
+}
+.doi .o3 p {
+  margin-top: -20px;
+  font-size: 20px;
+  margin-left: 120px;
+}
+.contact h2 {
+  margin-top: 425px;
+  margin-left: 450px;
+  font-size: 30px;
+  padding-top: 20px;
+}
+.contact p {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+}
+.contact input {
+  margin-left: 40px;
+  width: 450px;
+  height: 30px;
+  border-radius: 5px;
+  border: 2px solid peru;
+}
+.mess input {
+  margin-left: 40px;
+  width: 450px;
+  height: 200px;
+  border: 2px solid peru;
+}
+.send {
+  border: 1px solid black;
+  background-color: blanchedalmond;
+  width: 100px;
+  height: 30px;
+  margin-left: 40px;
+  border-radius: 5px;
+  margin-top: 25px;
+}
+.send h3 {
+  margin-top: 8px;
+  color: black;
+}
+.send h3 a {
+  text-decoration: none;
+  margin-left: 30px;
+}
+.contact .left {
+  float: left;
+}
+.contact .right img {
+  margin-left: 100px;
+}
+.follow h2 {
+  margin-top: 50px;
+  margin-left: 450px;
+  font-size: 30px;
+  padding-top: 20px;
+}
+.follow .logo .face img {
+  width: 55px;
+  height: 55px;
+  float: left;
+  margin-left: 415px;
+  margin-right: 50px;
+}
+
+.follow .logo .twitter img {
+  width: 70px;
+  height: 70px;
+  margin-top: -7px;
+  margin-left: 33px;
+}
+.bot img {
+  width: 1000px;
+  position: relative;
+  margin-top: 50px;
+}
+.bot .bottom h1 {
+  position: absolute;
+  color: #837dff;
+  float: left;
+  margin-left: 90px;
+  margin-top: -130px;
+}
+
+.bot ul li {
+  float: left;
+  list-style: none;
+  margin-top: 1px;
+  margin-left: 270px;
+  margin-right: -15px;
+}
+.bot .cot1 ul li a {
+  text-decoration: none;
+  position: absolute;
+  margin-top: -170px;
+  margin-right: 50px;
+}
+.bot .cot2 ul li a {
+  text-decoration: none;
+  position: absolute;
+  margin-top: -110px;
+  margin-right: 50px;
+}
+.ten p {
+  position: absolute;
+  color: gray;
+  margin-top: -47px;
+  margin-left: 425px;
+}
